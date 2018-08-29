@@ -7,6 +7,7 @@
 #include "TFile.h"
 #include "TTree.h"
 const bool IS_GEANTINO = true;
+
 void printusage(char * name){
      printf("%s [InputFile]\n",name);
 }
@@ -15,8 +16,9 @@ int main(int argc, char** argv){
 	  printusage(argv[0]);
 	  return -1;
      }
-     TString outputFileName = argv[1];
-     TString inputFileName = argv[2];
+     TString options = argv[1];
+     TString outputFileName = argv[2];
+     TString inputFileName = argv[3];
   
      // get input file
      TChain * iChain = new TChain("mc","mc");
@@ -62,21 +64,36 @@ int main(int argc, char** argv){
      double o_iy;
      double o_iz;
      int o_iev;
-     TFile *f_out = new TFile("out.root","RECREATE");
-     TTree *t_out = new TTree("mc","combined hits");
-     t_out->Branch("iev",&o_iev);
-     t_out->Branch("pt",&o_pt);
-     t_out->Branch("pz",&o_pz);
-     t_out->Branch("ix",&o_ix);
-     t_out->Branch("iy",&o_iy);
-     t_out->Branch("iz",&o_iz);
-     t_out->Branch("nturn",&o_nturn);
-     
+     TFile *f_out(NULL);
+     TTree *t_out(NULL);
+     if(options.Contains("tree")){
+	  f_out = new TFile("out.root","RECREATE");
+	  t_out = new TTree("mc","combined hits");
+	  t_out->Branch("iev",&o_iev);
+	  t_out->Branch("pt",&o_pt);
+	  t_out->Branch("pz",&o_pz);       
+	  t_out->Branch("ix",&o_ix);
+	  t_out->Branch("iy",&o_iy);
+	  t_out->Branch("iz",&o_iz);
+	  t_out->Branch("layer",&o_v_cdc_layerId);
+	  t_out->Branch("cell",&o_v_cdc_cellId);
+	  t_out->Branch("edep",&o_v_cdc_edep);
+	  t_out->Branch("doca",&o_v_cdc_DOCA);
+	  t_out->Branch("nturn",&o_nturn);
+     }
+     // Prepare output binary file
+     FILE * bin_out(NULL);
+     if(options.Contains("bin"))
+	  bin_out = fopen("output.bin","wb");
+     int16_t oint16;
+     float   ofloat32;
+
      for(int  iev=0;iev<nEntries/10;iev++){
 	  iChain->GetEntry(iev);
 	  if(iev%10000==0) printf("%d/%d = %.4f \n",iev,nEntries, iev*1./nEntries);
 	  if(!IS_GEANTINO && !trig) continue;
-	  if(nTurns==0)continue;
+	  //if(nTurns==0)continue;
+	  if(nTurns!=1)continue;
 
 	  // Fill labels
 	  o_pt = sqrt(first_px*first_px+first_py*first_py)*1000;
@@ -106,7 +123,6 @@ int main(int argc, char** argv){
 		    min_r[lay][cel][0] = i;
 	       }	    
 	  }
-
 	  int ncombined = 0;
 	  for(int i=0;i<nhits;i++){
 	       int lay = v_cdc_layerId->at(i);
@@ -115,10 +131,40 @@ int main(int argc, char** argv){
 	       if(index !=i) continue;
 	       double dca = v_cdc_DOCA->at(i);
 	       double edep = v_cdc_edep->at(i);
+	       o_v_cdc_layerId.push_back(lay);
+	       o_v_cdc_cellId.push_back(cel);
+	       o_v_cdc_edep.push_back(edep);
+	       o_v_cdc_DOCA.push_back(dca);
 	       ncombined++;
-	  }	  
-	  t_out->Fill();
+	  }
+	  if(options.Contains("tree"))
+	       t_out->Fill();
+
+	  // Output binary file
+	  if(options.Contains("bin")){
+	       oint16 = iev; fwrite(&oint16,sizeof(int16_t),1,bin_out);
+	       oint16 = ncombined; fwrite(&oint16,sizeof(int16_t),1,bin_out);
+	       ofloat32 = o_pt;fwrite(&ofloat32,sizeof(float),1,bin_out);
+	       ofloat32 = o_pz;fwrite(&ofloat32,sizeof(float),1,bin_out);
+	       ofloat32 = o_ix;fwrite(&ofloat32,sizeof(float),1,bin_out);
+	       ofloat32 = o_iy;fwrite(&ofloat32,sizeof(float),1,bin_out);
+	       ofloat32 = o_iz;fwrite(&ofloat32,sizeof(float),1,bin_out);
+	       for(int i=0;i<(int)o_v_cdc_layerId.size();i++){
+		    oint16 = o_v_cdc_layerId[i]; fwrite(&oint16,sizeof(int16_t),1,bin_out);
+		    oint16 = o_v_cdc_cellId[i]; fwrite(&oint16,sizeof(int16_t),1,bin_out);
+		    ofloat32 = o_v_cdc_edep[i];fwrite(&ofloat32,sizeof(float),1,bin_out);
+		    ofloat32 = o_v_cdc_DOCA[i];fwrite(&ofloat32,sizeof(float),1,bin_out);
+	       }
+	  }
+	  
+	  // clear events
+	  o_v_cdc_layerId.clear();
+	  o_v_cdc_cellId.clear();
+	  o_v_cdc_edep.clear();
+	  o_v_cdc_DOCA.clear();
      }
-     t_out->Write();
-     f_out->Close();
+     if(options.Contains("tree")){
+	  t_out->Write();
+	  f_out->Close();
+     }
 }
