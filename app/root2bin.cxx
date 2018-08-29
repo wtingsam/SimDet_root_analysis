@@ -21,7 +21,7 @@ int main(int argc, char** argv){
   int i_cth;
   int i_nHits;
   double i_cth_time;
-  int i_it;
+  //int i_it;
   double i_ix;
   double i_iy;
   double i_iz;
@@ -53,7 +53,6 @@ int main(int argc, char** argv){
   iChain->SetBranchAddress("cdc_nHits",&i_nHits);
   iChain->SetBranchAddress("cdc_layerId",&i_layerID);
   iChain->SetBranchAddress("cdc_cellId",&i_cellID);
-  //iChain->SetBranchAddress("cdc_tstart",&i_tstart);
   iChain->SetBranchAddress("cdc_edep",&i_edep);
   iChain->SetBranchAddress("cdc_turnId",&i_iturn);
   iChain->SetBranchAddress("cdc_driftD",&i_driftD);
@@ -78,12 +77,12 @@ int main(int argc, char** argv){
     if (i_cth!=1) continue;
     oint16 = iEntry;fwrite(&oint16,sizeof(int16_t),1,outputFile); // output iEntry
     // get number of hits
-    // int nHitsG = 0;
-    // for (int ihit = 0; ihit<i_nHits; ihit++){
-    //   if ((*i_tstart)[ihit]-i_cth_time<-25) continue;
-    //   nHitsG++;
-    // }
-    //oint16 = nHitsG;fwrite(&oint16,sizeof(int16_t),1,outputFile); // output nHits
+    int nHitsG = 0;
+    for (int ihit = 0; ihit<i_nHits; ihit++){
+      //if ((*i_tstart)[ihit]-i_cth_time<-25) continue;
+      nHitsG++;
+    }
+    oint16 = nHitsG;fwrite(&oint16,sizeof(int16_t),1,outputFile); // output nHits
     for (int ihit = 0; ihit<i_nHits; ihit++){
       //if ((*i_tstart)[ihit]-i_cth_time<-25) continue;
       oint16 = (*i_layerID)[ihit];fwrite(&oint16,sizeof(int16_t),1,outputFile); // output layerID 
@@ -92,7 +91,7 @@ int main(int argc, char** argv){
       oint16 = (*i_edep)[ihit]*1e7>32767?32767:(*i_edep)[ihit]*1e7;fwrite(&oint16,sizeof(int16_t),1,outputFile); // output edep
       oint16 = (*i_iturn)[ihit];fwrite(&oint16,sizeof(int16_t),1,outputFile); // output turn #
       ofloat32 = (*i_driftD)[ihit];fwrite(&ofloat32,sizeof(float),1,outputFile); // output driftD
-      ofloat32 = (*i_t)[ihit]-i_it;fwrite(&ofloat32,sizeof(float),1,outputFile); // output tof
+      //ofloat32 = (*i_t)[ihit]-i_it;fwrite(&ofloat32,sizeof(float),1,outputFile); // output tof
       ofloat32 = (*i_x)[ihit];fwrite(&ofloat32,sizeof(float),1,outputFile); // output x
       ofloat32 = (*i_y)[ihit];fwrite(&ofloat32,sizeof(float),1,outputFile); // output y
       ofloat32 = (*i_z)[ihit];fwrite(&ofloat32,sizeof(float),1,outputFile); // output z

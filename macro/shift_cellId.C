@@ -30,7 +30,8 @@ void plot(TString filename, int single_evnt=0){
   
   for(int iev=single_evnt;iev<single_evnt+n_read_evnt;iev++){
     mc->GetEntry(iev);
-    if(trig){
+    //if(trig){
+    if(trig || !trig){
       bool hasBoundHit = false;
       // Pre processing
       int min_cell = 1e5;
