@@ -106,7 +106,7 @@ int main(int argc, char** argv){
      TFile *f_out(NULL);
      TTree *t_out(NULL);
      if(options.Contains("tree")){
-	  f_out = new TFile("out.root","RECREATE");
+	  f_out = new TFile(outputFileName+".root","RECREATE");
 	  t_out = new TTree("mc","combined hits");
 	  t_out->Branch("iev",&o_iev);
 	  t_out->Branch("pt",&o_pt);
@@ -139,7 +139,7 @@ int main(int argc, char** argv){
      
      FILE * bin_out(NULL);
      if(options.Contains("bin"))
-	  bin_out = fopen("output.bin","wb");
+	  bin_out = fopen(outputFileName+".bin","wb");
      int16_t oint16;
      float   ofloat32;
      
