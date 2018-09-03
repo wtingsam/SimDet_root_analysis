@@ -266,14 +266,14 @@ int main(int argc, char** argv){
 	       ofloat32 = o_iy;fwrite(&ofloat32,sizeof(float),1,bin_out);
 	       ofloat32 = o_iz;fwrite(&ofloat32,sizeof(float),1,bin_out);
 	       for(int ipy=0;ipy<pixel_bin;ipy++){
-                    for(int ipx=0;ipx<pixel_bin;ipx++){
-			 ofloat32 = odriftR32[ipx][ipy]; fwrite(&ofloat32,sizeof(float),1,bin_out);
-		    }
+			   for(int ipx=0;ipx<pixel_bin;ipx++){
+				   ofloat32 = odriftR32[ipx][ipy]; fwrite(&ofloat32,sizeof(float),1,bin_out);
+			   }
 	       }
 	       for(int ipy=0;ipy<pixel_bin;ipy++){
-                    for(int ipx=0;ipx<pixel_bin;ipx++){
-			 ofloat32 = oedep32[ipx][ipy]; fwrite(&ofloat32,sizeof(float),1,bin_out);
-		    }
+			   for(int ipx=0;ipx<pixel_bin;ipx++){
+				   ofloat32 = oedep32[ipx][ipy]; fwrite(&ofloat32,sizeof(float),1,bin_out);
+			   }
 	       }
 	  }
 
