@@ -143,8 +143,8 @@ int main(int argc, char** argv){
      int16_t oint16;
      float   ofloat32;
      
-     //for(int  iev=0;iev<3;iev++){
-     for(int  iev=0;iev<nEntries/10;iev++){
+     for(int  iev=0;iev<100;iev++){
+     //for(int  iev=0;iev<nEntries/10;iev++){
 	  for(int ipy=0;ipy<pixel_bin;ipy++)
 	       for(int ipx=0;ipx<pixel_bin;ipx++){
 		    odriftR32[ipx][ipy] = -99;
