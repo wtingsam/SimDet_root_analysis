@@ -12,7 +12,7 @@ LABEL_NAMES = ["p_t", "p_z",
 max_pixels = 512
 max_colors = 2
 max_labels = len(LABEL_NAMES)
-DEBUG = True
+DEBUG = False
 
 def _decode(data,offset):
     """
@@ -76,7 +76,8 @@ def write_array_to_tfrecord(array, labels, filename, options=None):
 if __name__ == '__main__':
     file_path = sys.argv[1] # Full path assumption
     output_dir = sys.argv[2]
-
+    if sys.argv[3] is not "":
+        max_pixels = int(sys.argv[3])
     filename = os.path.split(file_path)[1]
     output_filename = filename[:-4] + "_pixelized.tfrecord"
     output_path = output_dir + "/" + output_filename
@@ -95,6 +96,8 @@ if __name__ == '__main__':
         load_batches = 0
         try: 
             for i in range(num_batchs):
+                if i%1000 == 0:
+                    print("%d/%d=%.3f" %(i,num_batchs,i/num_batchs))
                 offset = chunk_bytes*i
                 img_r, img_q, lbl = _decode(f_bin,offset)
                 load_batches=load_batches+1
