@@ -52,7 +52,7 @@ void WireConfig::Initialize(double rotate, int debug)
         fYro_all[i] = (double*)malloc(sizeof(double)*MAX_WIREID);
     }
 
-    TString wiremap = "/home/samwong/MyWork/Tracking/TrackFinding/Sam_rebuilt/bdtg_tmva/info/chanmap_20160814.txt";
+    TString wiremap = "/home/s6875712/work/SimDet_root_analysis/info/chanmap_20160814.txt";
     fWireMapPath = wiremap;
     fNumSenseWire        = 0;
     fNumFieldWire        = 0;

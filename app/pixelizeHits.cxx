@@ -19,7 +19,7 @@ const double frame_min_Y = -80; //cm
 const double frame_max_X = 80; //cm
 const double frame_max_Y = 80; //cm
 const double frame_range = 160; //cm
-const int pixel_bin = 512;
+const int pixel_bin = 32;
 const int pixel_bin_size = frame_range/pixel_bin;
 void printusage(char * name){
      printf("%s [InputFile]\n",name);
@@ -143,8 +143,8 @@ int main(int argc, char** argv){
      int16_t oint16;
      float   ofloat32;
      
-     for(int  iev=0;iev<100;iev++){
-     //for(int  iev=0;iev<nEntries/10;iev++){
+     //for(int  iev=0;iev<100;iev++){
+     for(int  iev=0;iev<nEntries;iev++){
 	  for(int ipy=0;ipy<pixel_bin;ipy++)
 	       for(int ipx=0;ipx<pixel_bin;ipx++){
 		    odriftR32[ipx][ipy] = -99;
