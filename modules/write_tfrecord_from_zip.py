@@ -76,8 +76,7 @@ def write_array_to_tfrecord(array, labels, filename, options=None):
 if __name__ == '__main__':
     file_path = sys.argv[1] # Full path assumption
     output_dir = sys.argv[2]
-    if sys.argv[3] is not "":
-        max_pixels = int(sys.argv[3])
+    max_pixels = int(sys.argv[3])
     filename = os.path.split(file_path)[1]
     output_filename = filename[:-4] + "_pixelized.tfrecord"
     output_path = output_dir + "/" + output_filename

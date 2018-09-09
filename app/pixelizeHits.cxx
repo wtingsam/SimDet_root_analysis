@@ -19,7 +19,7 @@ const double frame_min_Y = -80; //cm
 const double frame_max_X = 80; //cm
 const double frame_max_Y = 80; //cm
 const double frame_range = 160; //cm
-const int pixel_bin = 32;
+const int pixel_bin = 128;
 const int pixel_bin_size = frame_range/pixel_bin;
 void printusage(char * name){
      printf("%s [InputFile]\n",name);
@@ -147,8 +147,8 @@ int main(int argc, char** argv){
      for(int  iev=0;iev<nEntries;iev++){
 	  for(int ipy=0;ipy<pixel_bin;ipy++)
 	       for(int ipx=0;ipx<pixel_bin;ipx++){
-		    odriftR32[ipx][ipy] = -99;
-		    oedep32[ipx][ipy] = -99;
+		    odriftR32[ipx][ipy] = 0;
+		    oedep32[ipx][ipy] = 0;;
 	       }
 	  iChain->GetEntry(iev);
 	  if(iev%10000==0) printf("%d/%d = %.4f \n",iev,nEntries, iev*1./nEntries);
@@ -165,6 +165,7 @@ int main(int argc, char** argv){
 	  o_nturn = nTurns;
 	  
 	  const int nhits = (int)v_cdc_layerId->size();
+	  if(nhits<30)continue;
 	  double min_r[20][500][2];
 	  double total_edep[20][500] = {0}; 
 	  for(int i=0;i<20;i++)
@@ -257,7 +258,7 @@ int main(int argc, char** argv){
 	  }
 
 	  // Output binary file
-	  if(options.Contains("bin")){
+	  if(options.Contains("bin") && o_pt>90 && o_pt<95){
 	       oint16 = iev; fwrite(&oint16,sizeof(int16_t),1,bin_out);
 	       oint16 = ncombined; fwrite(&oint16,sizeof(int16_t),1,bin_out);
 	       ofloat32 = o_pt;fwrite(&ofloat32,sizeof(float),1,bin_out);
