@@ -90,7 +90,7 @@ if __name__ == '__main__':
         f_bin = zf.read(filename)
         num_batches = int(len(f_bin)/chunk_bytes)
         print(num_batches)
-        num_batches = 1
+        num_batches = 10
         assert float(len(f_bin)/chunk_bytes).is_integer()
         print("Number of batches:",num_batches)
         print("Total bytes ", len(f_bin))
@@ -118,7 +118,7 @@ if __name__ == '__main__':
                     plt.subplot(cd_idx)
                     plt.grid()
                     plt.imshow(batch_imgs[i][:,:,j])
-            plt.show()    
+                plt.show()    
         # Define TF record options
         compression = tf.python_io.TFRecordCompressionType.GZIP
         tf_io_opts = tf.python_io.TFRecordOptions(compression)
